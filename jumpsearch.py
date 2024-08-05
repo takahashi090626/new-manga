@@ -1,9 +1,15 @@
-import mysql.connector
+import firebase_admin
+from firebase_admin import credentials, firestore
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
+
+# Firebaseの初期化
+cred = credentials.Certificate('manga.json')  # サービスアカウントキーのパスを指定
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 def convert_date(date_str):
     try:
@@ -12,23 +18,13 @@ def convert_date(date_str):
     except ValueError:
         return None
 
-# MySQL に接続
-db_connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="root",
-    database="comics_db",
-    port="3307"
-)
-cursor = db_connection.cursor()
-
 # SeleniumでChromeを使用
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')  # ヘッドレスモードで実行（ブラウザを表示しない）
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
 # スクレイピングするURL
-url = "https://www.shueisha.co.jp/books/newcomics/index.html?genre=inherit&month=next"
+url = "https://www.shueisha.co.jp/books/newcomics/index.html?genre=inherit"
 driver.get(url)
 driver.implicitly_wait(3)  # 3秒待機
 
@@ -50,16 +46,13 @@ for section in sections:
     img_element = section.find_element(By.TAG_NAME, 'img')
     img_url = img_element.get_attribute('src') if img_element else 'N/A'
 
-    # データベースに保存
-    cursor.execute("""
-        INSERT INTO comics (title, author, release_date, image_url)
-        VALUES (%s, %s, %s, %s)
-    """, (title, author, release_date, img_url))
-    db_connection.commit()
+    # Firestoreにデータを保存
+    doc_ref = db.collection('comics').add({
+        'title': title,
+        'author': author,
+        'release_date': release_date,
+        'image_url': img_url
+    })
 
 # ブラウザを閉じる
 driver.quit()
-
-# MySQL 接続を閉じる
-cursor.close()
-db_connection.close()

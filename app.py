@@ -1,16 +1,15 @@
 from flask import Flask, request, render_template
-import mysql.connector
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
 
-# MySQLの接続情報
-db_config = {
-    'user': 'root',
-    'password': 'root',
-    'host': 'localhost',
-    'database': 'comics_db',
-    'port': '3307'
-}
+# Firebase Admin SDK の初期化
+cred = credentials.Certificate('manga.json')  # サービスアカウントキーのパスを指定
+firebase_admin.initialize_app(cred)
+
+# Firestore インスタンスの取得
+db = firestore.client()
 
 @app.route('/')
 def index():
@@ -18,27 +17,25 @@ def index():
 
 @app.route('/search', methods=['POST'])
 def search():
-    query = request.form.get('query', '')
+    query = request.form.get('query', '').strip()
     if not query:
         return render_template('results.html', results=[])
 
     try:
-        # データベース接続
-        connection = mysql.connector.connect(**db_config)
-        cursor = connection.cursor(dictionary=True)
-        
-        # クエリ実行
-        cursor.execute("SELECT * FROM comics WHERE title LIKE %s", ('%' + query + '%',))
-        results = cursor.fetchall()
-        
-        # データベース接続終了
-        connection.close()
+        # Firestore からデータを取得
+        comics_ref = db.collection('comics')
+        query_ref = comics_ref.where('title', '>=', query).where('title', '<=', query + '\uf8ff')
+        results = query_ref.stream()
 
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        results = []
+        # 結果をリストに変換
+        results_list = [doc.to_dict() for doc in results]
+        print(f"Search Results: {results_list}")  
 
-    return render_template('results.html', results=results)
+    except Exception as e:
+        print(f"Error: {e}")
+        results_list = []
+
+    return render_template('results.html', results=results_list)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
