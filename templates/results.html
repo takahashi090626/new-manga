@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Search Results</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
     <h1>Search Results</h1>
     <ul>
         {% for comic in results %}
-        <li>{{ comic.title }} - {{ comic.author }} - {{ comic.release_date }}</li>
+        <li>
+            <h2>{{ comic.title }}</h2>
+            <p>作者: {{ comic.author }}</p>
+            <p>発売日: {{ comic.release_date }}</p>
+            <img src="{{ comic.image_url }}" alt="{{ comic.title }}" style="width:200px;height:auto;">
+        </li>
         {% endfor %}
     </ul>
     <a href="/">Back to search</a>
