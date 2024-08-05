@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Comic Search</title>
+</head>
+<body>
+    <h1>Comic Search</h1>
+    <form action="/search" method="post">
+        <input type="text" name="query" placeholder="Search for comics">
+        <button type="submit">Search</button>
+    </form>
+    {% if results is not none %}
+    <ul>
+        {% for comic in results %}
+        <li>{{ comic.title }} - {{ comic.author }} - {{ comic.release_date }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>
