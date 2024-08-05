@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -17,7 +18,7 @@ def index():
 
 @app.route('/search', methods=['POST'])
 def search():
-    query = request.form.get('query', '').strip()
+    query = request.form.get('query', '')
     if not query:
         return render_template('results.html', results=[])
 
@@ -38,4 +39,5 @@ def search():
     return render_template('results.html', results=results_list)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port, debug=True)
