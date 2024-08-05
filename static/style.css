@@ -1,87 +1,64 @@
-    /* ベーススタイル */
+/* General styles */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
     margin: 0;
-    padding: 20px;
-    color: #333;
-}
-
-/* ヘッダー */
-h1 {
-    text-align: center;
-    color: #ff6f61;
-}
-
-/* リストのスタイル */
-ul {
-    list-style-type: none;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-li {
+h1 {
+    color: #333;
+    margin-top: 20px;
+}
+
+ul.comic-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px;
+    width: 80%;
+}
+
+li.comic-item {
     background-color: #fff;
-    margin: 10px 0;
     padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     display: flex;
     align-items: center;
 }
 
-li img {
+.comic-image {
     max-width: 100px;
     margin-right: 20px;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
-/* 戻るリンクのスタイル */
-a {
-    display: block;
-    text-align: center;
+.comic-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.comic-title {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.comic-author, .comic-release-date {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #555;
+}
+
+.back-link {
     margin-top: 20px;
+    color: #007bff;
     text-decoration: none;
-    color: #fff;
-    background-color: #ff6f61;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: background-color 0.3s;
 }
 
-a:hover {
-    background-color: #e65c55;
+.back-link:hover {
+    text-decoration: underline;
 }
-/* 検索フォームのスタイル */
-form {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-input[type="text"] {
-    width: 50%;
-    padding: 10px;
-    margin-right: 10px;
-    border: 2px solid #ff6f61;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-input[type="text"]:focus {
-    border-color: #e65c55;
-}
-
-button[type="submit"] {
-    padding: 10px 20px;
-    background-color: #ff6f61;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button[type="submit"]:hover {
-    background-color: #e65c55;
-}
-
